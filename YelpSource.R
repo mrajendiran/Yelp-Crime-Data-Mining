@@ -151,6 +151,14 @@ names(crime_data)[c(38,39)] <- c("longmeters", "latmeters")
 # Clean Crime Data so error coordinates are not included 
 crime_data <- crime_data[crime_data$lat < 41 & crime_data$lat > 39 & crime_data$long < -87 & crime_data$long > -89, ]
 
+# Add "Response Time" column to crime data
+crime_data$TIME.ARRIVED <- as.numeric(crime_data$TIME.ARRIVED)
+crime_data$TIME.REPORTED <- as.numeric(crime_data$TIME.REPORTED)
+crime_data$RESPONSE.TIME <- crime_data$TIME.ARRIVED - crime_data$TIME.REPORTED
+
+# Remove observations where response time is zero
+crime_data <- crime_data[-grep(0, crime_data$RESPONSE.TIME),]
+
 ## URBANA CRIME HEAT MAP ##
 
 # Download the base map
