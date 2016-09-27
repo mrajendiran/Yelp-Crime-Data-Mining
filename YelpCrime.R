@@ -468,6 +468,9 @@ prf_pred <- performance(pr_pred, measure = "tpr", x.measure = "fpr")
 pr_crime <- prediction(crime_predict_density, true15$response)
 prf_crime <- performance(pr_crime, measure = "tpr", x.measure = "fpr")
 
+
+performance(pr_pred,"f")
+
 # plot ROC curve for each prediction
 plot(prf_cashcrime, col='mediumvioletred', main="ROC Curves")
 plot(prf_cash, col='blue', main="ROC Curves")
@@ -482,57 +485,68 @@ plot(prf_crime, col='red', main="ROC Curves")
 auc_cashcrime <- performance(pr_cashcrime, measure = "auc")
 auc_cashcrime <- auc_cashcrime@y.values[[1]]
 auc_cashcrime
+# [1] 0.8536818
 
 # auc for cash
 auc_cash <- performance(pr_cash, measure = "auc")
 auc_cash <- auc_cash@y.values[[1]]
 auc_cash
+# [1] 0.5553616
 
 # auc for rating+crime
 auc_ratingcrime <- performance(pr_ratingscrime, measure = "auc")
 auc_ratingcrime <- auc_ratingcrime@y.values[[1]]
 auc_ratingcrime
+# [1] 0.9545163
 
 # auc for rating
 auc_rating <- performance(pr_ratings, measure = "auc")
 auc_rating <- auc_rating@y.values[[1]]
 auc_rating
+# [1] 0.5303663
 
 # auc for price+crime
 auc_pricecrime <- performance(pr_pricecrime, measure = "auc")
 auc_pricecrime <- auc_pricecrime@y.values[[1]]
 auc_pricecrime
+# [1] 0.959677
 
 # auc for price
 auc_price <- performance(pr_price, measure = "auc")
 auc_price <- auc_price@y.values[[1]]
 auc_price
+# [1] 0.707199
 
 # auc for all predictors w/o crime density
 auc_pred <- performance(pr_pred, measure = "auc")
 auc_pred <- auc_pred@y.values[[1]]
 auc_pred
+# [1] 0.6083573
 
 # auc for all predictors w/ crime density
 auc_predcrime <- performance(pr_predcrime, measure = "auc")
-auc_cashcrime <- auc_predcrime@y.values[[1]]
+auc_predcrime <- auc_predcrime@y.values[[1]]
 auc_predcrime
+# [1] 0.8271655
 
 # auc for crime density
 auc_crime <- performance(pr_crime, measure = "auc")
 auc_crime <- auc_crime@y.values[[1]]
 auc_crime
+# [1] 0.9559881
 
 # Find Classification Rate (https://www.r-bloggers.com/evaluating-logistic-regression-models/)
 
 # Classification Rate for Price Range
 accuracy <- table(crime_predict_responsetime, true15[,"RESPONSE.TIME"])
 sum(diag(accuracy))/sum(accuracy)
+# [1] 5e-04
 names(predict15)
 
 # Classification Rate for Crime Density + Price Range
 accuracy2 <- table(crime_predict_responsetime2, true15[,"RESPONSE.TIME"])
 sum(diag(accuracy))/sum(accuracy)
+# [1] 5e-04
 
 # Check for Multicollinearity
 # > vif(logm_totaldensity)
