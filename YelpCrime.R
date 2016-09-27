@@ -187,14 +187,20 @@ logm_14PriceRange2 = glm(RESPONSE.TIME ~ crime_density+avg_PriceRange, data = tr
 # Avg Business Price Range as a Predictor
 logm_14PriceRange = glm(RESPONSE.TIME ~ avg_PriceRange, data = train14)
 
+# Business Price Range with Crime Location
+logm_14PriceRange3 = glm(response ~ crime_density+avg_PriceRange, data = train14)
+logm_14PriceRange4 = glm(response ~ avg_PriceRange, data = train14)
+
 # All Predictors, including crime density
 logm_totaldensity = glm(response ~ crime_density+avg_PriceRange+avg_rating+cash, data = train14)
+vif(logm_totaldensity)
 
 # Previous Years Crime Density as a Predictor
 logm_crimedensity = glm(response ~ crime_density, data = train14)
-summary(logm_crimedensity)
+
 # All Predictors, not including crime density
 logm_total = glm(response ~ avg_PriceRange+avg_rating+cash, data = train14)
+vif(logm_total)
 
 ## LOGISTIC REGRESSION MODEL SUMMARIES ## 
 
@@ -402,6 +408,11 @@ crime_predict_responsetime2 = predict(logm_14PriceRange2, predict15, type="respo
 # run prediction for price_range
 crime_predict_responsetime = predict(logm_14PriceRange, predict15, type="response")
 
+# run prediction for price_range + crime density (using crime points)
+crime_predict_responsetime3 = predict(logm_14PriceRange3, predict15, type="response")
+# run prediction for price_range (using crime points)
+crime_predict_responsetime4 = predict(logm_14PriceRange4, predict15, type="response")
+
 # run prediction crime density
 crime_predict_density <- predict(logm_crimedensity, predict15, type="response")
 
@@ -438,11 +449,11 @@ pr_ratings <- prediction(crime_predict_ratings, true15$response)
 prf_ratings <- performance(pr_ratings, measure = "tpr", x.measure = "fpr")
 
 # avg business price range + crime density predictions vs. true crime responses
-pr_pricecrime <- prediction(crime_predict_responsetime2, true15$response)
+pr_pricecrime <- prediction(crime_predict_responsetime3, true15$response)
 prf_pricecrime <- performance(pr_pricecrime, measure = "tpr", x.measure = "fpr")
 
 # avg business price range predictions vs. true crime responses
-pr_price <- prediction(crime_predict_responsetime, true15$response)
+pr_price <- prediction(crime_predict_responsetime4, true15$response)
 prf_price <- performance(pr_price, measure = "tpr", x.measure = "fpr")
 
 # all predictors predictions w/ crime density vs. true crime responses
@@ -462,7 +473,7 @@ plot(prf_cashcrime, col='mediumvioletred', main="ROC Curves")
 plot(prf_cash, col='blue', main="ROC Curves")
 plot(prf_ratingscrime, col='red', main="ROC Curves")
 plot(prf_price, col='red', main="ROC Curves")
-plot(prf_pricecrime, col='red', main="ROC - Price Range Prediction")
+plot(prf_pricecrime, col='red', main="ROC - Price Range + Crime Prediction")
 plot(prf_predcrime, col='red', main="ROC Curves")
 plot(prf_pred, col='red', main="ROC Curves")
 plot(prf_crime, col='red', main="ROC Curves")
@@ -523,4 +534,10 @@ names(predict15)
 accuracy2 <- table(crime_predict_responsetime2, true15[,"RESPONSE.TIME"])
 sum(diag(accuracy))/sum(accuracy)
 
-
+# Check for Multicollinearity
+# > vif(logm_totaldensity)
+# crime_density avg_PriceRange     avg_rating           cash 
+# 1.167852       4.535433       4.341561       1.264062 
+# > vif(logm_total)
+# avg_PriceRange     avg_rating           cash 
+# 4.384114       4.234081       1.156394
