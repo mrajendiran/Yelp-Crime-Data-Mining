@@ -1,4 +1,4 @@
-setwd("~/Documents/MSDS/Data Mining/Case Study 1")
+#setwd("~/Documents/MSDS/Data Mining/Case Study 1")
 library(jsonlite)
 library(tibble)
 library(dplyr)
@@ -14,11 +14,12 @@ library(kedd)
 library(ks)
 library(ggmap)
 library(ROCR)
+library(car)
 
 yelp_dataset <- read.csv("yelp_dataset.csv")
-yelp_review_dataset <- read.csv("yelp_dataset_review.csv")
-yelp_businesses <- yelp_dataset
+#yelp_review_dataset <- read.csv("yelp_dataset_review.csv")
 yelp_master <- read.csv("yelp_master.csv")
+yelp_businesses <- yelp_master
 
 ### .JSON to .CSV FOR YELP DATA ###
 
@@ -134,7 +135,7 @@ names(yelp_master)[c(82,83)] <- c("longmeters", "latmeters")
 # Add 1 to all crimes
 # Remove rows that have NAs in Longitude or Latitude
 crime_data <- read.csv("UrbanaData.csv")
-crime_data <- filter(crime_data, crime_data$YEAR.OCCURRED > 2004) #!!!
+crime_data <- filter(crime_data, crime_data$YEAR.OCCURRED > 2004)
 crime_data <- cbind(crime_data, 1)
 names(crime_data)[c(37, 36, 35)] <- c("response", "long", "lat")
 crime_data <- crime_data[complete.cases(crime_data$long),]
@@ -149,6 +150,15 @@ names(crime_data)[c(38,39)] <- c("longmeters", "latmeters")
 
 # Clean Crime Data so error coordinates are not included 
 crime_data <- crime_data[crime_data$lat < 41 & crime_data$lat > 39 & crime_data$long < -87 & crime_data$long > -89, ]
+
+# Add "Response Time" column to crime data
+crime_data$TIME.ARRIVED <- as.numeric(crime_data$TIME.ARRIVED)
+crime_data$TIME.REPORTED <- as.numeric(crime_data$TIME.REPORTED)
+crime_data$RESPONSE.TIME <- crime_data$TIME.ARRIVED - crime_data$TIME.REPORTED
+
+# Remove observations where response time is zero
+crime_data <- crime_data[-grep(0, crime_data$RESPONSE.TIME),]
+
 
 ## URBANA CRIME HEAT MAP ##
 
