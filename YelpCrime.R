@@ -547,11 +547,3 @@ names(predict15)
 accuracy2 <- table(crime_predict_responsetime2, true15[,"RESPONSE.TIME"])
 sum(diag(accuracy))/sum(accuracy)
 # [1] 5e-04
-
-# Check for Multicollinearity
-# > vif(logm_totaldensity)
-# crime_density avg_PriceRange     avg_rating           cash 
-# 1.167852       4.535433       4.341561       1.264062 
-# > vif(logm_total)
-# avg_PriceRange     avg_rating           cash 
-# 4.384114       4.234081       1.156394
