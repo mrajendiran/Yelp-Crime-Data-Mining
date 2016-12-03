@@ -1,4 +1,3 @@
-#setwd("~/Documents/MSDS/Data Mining/Case Study 1")
 library(jsonlite)
 library(tibble)
 library(dplyr)
